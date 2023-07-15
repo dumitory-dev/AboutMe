@@ -1,12 +1,12 @@
 # Site settings
 title:          dumitory-dev blog
-description:    "Rain is a simple and clean Jekyll theme with focus on content."
+description:    "dumitory-dev blog"
 url:            https://github.com/inelaah/rain
 
 # Author
 author:
-  name:         Inela Avdic Hukic
-  email:        inelaah@gmail.com
+  name:         dumitory-dev
+  email:        blackmesa2018@gmail.com
   url:          https://inelaah.com
 
 # Build settings
