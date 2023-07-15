@@ -1,5 +1,5 @@
 # Site settings
-title:          Rain
+title:          dumitory-dev blog
 description:    "Rain is a simple and clean Jekyll theme with focus on content."
 url:            https://github.com/inelaah/rain
 
@@ -34,7 +34,7 @@ related_posts_section:
 
 # Links to social media
 social:
-  email: inelaah@gmail.com
-  github: https://github.com/inelaah
+  email: blackmesa2018@gmail.com
+  github: https://github.com/dumitory-dev
   twitter: https://twitter.com
-  linkedin: https://ba.linkedin.com/in/inela-avdic-hukic-322354131
+  linkedin: https://linkedin.com/
