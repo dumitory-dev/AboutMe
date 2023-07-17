@@ -2,7 +2,7 @@
 layout: post
 title: "Creating a Simple UEFI Application with EDK2 and Visual Studio 2022: A Beginner's Guide"
 author: "dmitry-ch"
-tags: Tale
+category: How to
 ---
 
 ## Introduction
