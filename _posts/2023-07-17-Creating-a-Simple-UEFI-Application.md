@@ -407,4 +407,7 @@ In this tutorial, we have learned how to create a simple UEFI application that p
 - [UEFI EDK2 tutorials](https://github.com/Kostr/UEFI-Lessons)
 
 ## Result
-<img src="/_images/result.jpg" alt="Result" width="200"/>
+
+<img src="../_images/result.jpg"
+     alt="Result"
+     style="float: left; margin-right: 10px;" width="300" height="300" />
