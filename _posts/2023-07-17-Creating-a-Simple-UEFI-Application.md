@@ -142,7 +142,7 @@ First, we need to create DSC (Decsription) and INF (Information) files. These fi
 > Each platform DSC file is broken out into sections in a manner similar to the component description (INF) files. However, while the intent of a component's INF file is to define the source files, libraries (or library classes), and definitions relevant to building the component, the function of the platform DSC file is to specify the library instances, components and output formats used to generate binary files that will be processed by other tools to generate an image that is either put into a flash device, made available for recovery booting or updating existing firmware on a platform.
 [EDK2 Wiki](https://tianocore-docs.github.io/EDK2-DscSpecification/release-1.28/2_dsc_overview/21_processing_overview.html#21-processing-overview)
 
-In the EDK2 folder structure, create a new folder called `HelloWorldPkg` in `<root>\EDK2\HelloWorldPkg`. Then create a new file called `HelloWorldPkg.dsc`. Then copy the following contents into the `HelloWorldPkg.dsc` file:
+In the EDK2 folder structure, create a new folder called `HelloWorldPkg` (`<root>\HelloWorldPkg`). Then create a new file called `HelloWorldPkg.dsc`. Then copy the following contents into the `HelloWorldPkg.dsc` file:
 
 ```ini
 [Defines]
