@@ -17,7 +17,7 @@ UEFI is a specification that defines a software interface between an operating s
 What is EDK2?
 
 EDK2 is an open-source development environment for UEFI applications. EDK2 is a fork of the TianoCore project. EDK2 is maintained by the UEFI Forum. - [Wikipedia](https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface)
-More information about EDK2 can be found on the [EDK2 GitHub page](https://github.com/tianocore/edk2).
+More information about EDK2 can be found on the [EDK2 GitHub page](https://github.com/tianocore/EDK2).
 
 
 ## Prerequisites
@@ -50,12 +50,12 @@ Follow the instructions on the [EDK2 GitHub page](https://github.com/tianocore/t
 Clone the EDK2 repository to your local machine. You can do this by running the following command in the command prompt:
 
 ```bash
-git clone https://github.com/tianocore/edk2.git
+git clone https://github.com/tianocore/EDK2.git
 git submodule update --init --recursive
 ```
 
 ### Build or Install the EDK2 [BaseTools]()
-Open the **Visual Studio Developer Command Prompt** and navigate to the edk2 directory. Then run the following command:
+Open the **Visual Studio Developer Command Prompt** and navigate to the EDK2 directory. Then run the following command:
 
 ```bash
 edksetup.bat Rebuild
@@ -66,7 +66,7 @@ This command will initiate the compilation and building process of the EDK2 base
 In addition to building the tools, the command will also copy the default configuration templates from `<root>\BaseTools\Conf` to `<root>\Conf`. Specifically, the files build_rule.txt, target.txt, and tools_def.txt will be copied.
 
 
-**Another way** to install the EDK2 BaseTools is to download the pre-built binaries from [here](https://github.com/dumitory-dev/edk2-BaseTools-win32-updated/releases) (will be updated soon). Then extract the contents of the archive to `<root>\BaseTools\Bin\Win32`. Don't forget to copy the default configuration templates from `<root>\BaseTools\Conf` to `<root>\Conf`.
+**Another way** to install the EDK2 BaseTools is to download the pre-built binaries from [here](https://github.com/dumitory-dev/EDK2-BaseTools-win32-updated/releases) (will be updated soon). Then extract the contents of the archive to `<root>\BaseTools\Bin\Win32`. Don't forget to copy the default configuration templates from `<root>\BaseTools\Conf` to `<root>\Conf`.
 
 ## Step 2: Create Your First UEFI Application
 
@@ -77,12 +77,9 @@ Once your environment is set up, it's time to create your first UEFI application
 First, we need to create DSC (Decsription) and INF (Information) files. These files are used to describe the contents of the UEFI application. 
 
 > Each platform DSC file is broken out into sections in a manner similar to the component description (INF) files. However, while the intent of a component's INF file is to define the source files, libraries (or library classes), and definitions relevant to building the component, the function of the platform DSC file is to specify the library instances, components and output formats used to generate binary files that will be processed by other tools to generate an image that is either put into a flash device, made available for recovery booting or updating existing firmware on a platform.
-[EDK2 Wiki](https://tianocore-docs.github.io/edk2-DscSpecification/release-1.28/2_dsc_overview/21_processing_overview.html#21-processing-overview)
+[EDK2 Wiki](https://tianocore-docs.github.io/EDK2-DscSpecification/release-1.28/2_dsc_overview/21_processing_overview.html#21-processing-overview)
 
-In the EDK2 folder structure, create a new folder called `HelloWorldPkg` in `<root>\edk2\HelloWorldPkg`. Then create a new file called `HelloWorldPkg.dsc`. Then copy the following contents into the `HelloWorldPkg.dsc` file:
-
-<details>
-  <summary>HelloWorldPkg</summary>
+In the EDK2 folder structure, create a new folder called `HelloWorldPkg` in `<root>\EDK2\HelloWorldPkg`. Then create a new file called `HelloWorldPkg.dsc`. Then copy the following contents into the `HelloWorldPkg.dsc` file:
 
 ```ini
 
@@ -136,12 +133,9 @@ In the EDK2 folder structure, create a new folder called `HelloWorldPkg` in `<ro
   HelloWorldApplication.inf
 
 ```
-</details>
 
 Then create a new file called `HelloWorldApplication.inf` in the same folder. Then copy the following contents into the `HelloWorldApplication.inf` file:
 
-<details>
-  <summary>HelloWorldApplication</summary>
 
 ```ini
 # Variables defined to be used during the build process
@@ -166,11 +160,3 @@ Then create a new file called `HelloWorldApplication.inf` in the same folder. Th
   UefiApplicationEntryPoint    # Uefi application entry point
   UefiLib                      # UefiLib
 ```
-</details>
-
-
-
-
-
-
-
