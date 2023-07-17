@@ -292,9 +292,7 @@ UefiMain(
 
 Now that we have created the DSC and INF files, we can build the UEFI application. To do this, open the **Visual Studio Developer Command Prompt** and navigate to the EDK2 directory. Open the `Conf/target.txt` file and setup the following variables:
 
-
-<details>
-  <summary>target.txt</summary>
+[expand]
 ```ini
 #
 #  Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
@@ -367,7 +365,8 @@ TOOL_CHAIN_TAG        = VS2019
 BUILD_RULE_CONF = Conf/build_rule.txt
 
 ```
-</details>
+[/expand]
+
 
 Then run the following command:
 
