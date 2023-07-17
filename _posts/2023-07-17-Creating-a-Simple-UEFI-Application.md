@@ -61,6 +61,8 @@ Open the **Visual Studio Developer Command Prompt** and navigate to the EDK2 dir
 edksetup.bat Rebuild
 ``` 
 
+> You can also simply run `edksetup.bat` without any arguments to load environment variables for the EDK II build.
+
 This command will initiate the compilation and building process of the EDK2 base tools. The resulting binaries will be located in `<root>\BaseTools\Bin\Win32`. These tools include GenFfs.exe, GenFv.exe, VfrCompile.exe, and various other commonly used tools.
 
 In addition to building the tools, the command will also copy the default configuration templates from `<root>\BaseTools\Conf` to `<root>\Conf`. Specifically, the files build_rule.txt, target.txt, and tools_def.txt will be copied.
@@ -82,7 +84,6 @@ First, we need to create DSC (Decsription) and INF (Information) files. These fi
 In the EDK2 folder structure, create a new folder called `HelloWorldPkg` in `<root>\EDK2\HelloWorldPkg`. Then create a new file called `HelloWorldPkg.dsc`. Then copy the following contents into the `HelloWorldPkg.dsc` file:
 
 ```ini
-
 [Defines]
   DSC_SPECIFICATION         = 0x00010005 # It is the version of the DSC specification that this file conforms to.
   PLATFORM_GUID             = c4d69391-7c20-426e-b1d4-33cbabc7116c # Create GUID - https://www.guidgenerator.com/online-guid-generator.aspx
@@ -91,7 +92,7 @@ In the EDK2 folder structure, create a new folder called `HelloWorldPkg` in `<ro
   SKUID_IDENTIFIER          = DEFAULT # The contents of this section are used to define valid SKUID_IDENTIFIER names.
   SUPPORTED_ARCHITECTURES   = AARCH64|X64 # all supported architectures for this platform
   BUILD_TARGETS             = DEBUG|RELEASE|NOOPT 
-  OUTPUT_DIRECTORY          = $(PKG_OUTPUT_DIR)
+  OUTPUT_DIRECTORY          = Build/HelloWorldPkg
 
 # Varios libs that are required to build the our UEFI application
 [LibraryClasses]
@@ -117,6 +118,7 @@ In the EDK2 folder structure, create a new folder called `HelloWorldPkg` in `<ro
   #
   DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
+  RegisterFilterLib|MdePkg/Library/RegisterFilterLibNull/RegisterFilterLibNull.inf
 
 [LibraryClasses.ARM,LibraryClasses.AARCH64]
   #
@@ -130,33 +132,181 @@ In the EDK2 folder structure, create a new folder called `HelloWorldPkg` in `<ro
   NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
 
 [Components]
-  HelloWorldApplication.inf
-
+  HelloWorldPkg/HelloWorldApplication.inf
 ```
 
 Then create a new file called `HelloWorldApplication.inf` in the same folder. Then copy the following contents into the `HelloWorldApplication.inf` file:
 
+```ini
+[Defines]
+  INF_VERSION                    = 1.25
+  BASE_NAME                      = HelloWorldApplication
+  FILE_GUID                      = db9614f2-b421-4fa1-a324-e9a6cbfc611d
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = UefiMain
+  VALID_ARCHITECTURES            = X64
+
+
+[Sources]
+  HelloWorldApplication.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  
+[LibraryClasses]
+  UefiApplicationEntryPoint
+  UefiLib
+```
+
+Finally, create a new file called `HelloWorldApplication.c` in the same folder. Then copy the following contents into the `HelloWorldApplication.c` file:
+
+```c
+#include <Library/UefiBootServicesTableLib.h>
+#include <Library/UefiLib.h>
+
+/**
+  as the real entry point for the application.
+
+  @param[in] ImageHandle    The firmware allocated handle for the EFI image.
+  @param[in] SystemTable    A pointer to the EFI System Table.
+
+  @retval EFI_SUCCESS       The entry point is executed successfully.
+  @retval other             Some error occurs when executing this entry point.
+
+**/
+EFI_STATUS
+EFIAPI
+UefiMain(
+    IN EFI_HANDLE ImageHandle,
+    IN EFI_SYSTEM_TABLE *SystemTable)
+{
+  UINTN Index = 0;
+  EFI_STATUS Status = EFI_SUCCESS;
+
+  if (SystemTable == NULL)
+  {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  if ((SystemTable->ConOut == NULL) || (SystemTable->ConOut->OutputString == NULL) || (SystemTable->ConOut->ClearScreen == NULL))
+  {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  if ((SystemTable->BootServices == NULL) || (SystemTable->BootServices->Stall == NULL))
+  {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  Status = SystemTable->ConOut->ClearScreen(SystemTable->ConOut);
+  if (EFI_ERROR(Status))
+  {
+    return Status;
+  }
+
+  Status = SystemTable->ConOut->OutputString(SystemTable->ConOut, L"\r\nHello World!\r\n");
+  if (EFI_ERROR(Status))
+  {
+    return Status;
+  }
+
+  // Or we can use just Print function
+  Print(L"Press any key to boot...!\n");
+  Status = gBS->WaitForEvent(1, &(gST->ConIn->WaitForKey), &Index);
+
+  if (EFI_ERROR(Status))
+  {
+    return Status;
+  }
+
+  gST->ConIn->Reset(gST->ConIn, FALSE);
+
+  return EFI_SUCCESS;
+}
+
+```
+
+### Build the UEFI Application
+
+Now that we have created the DSC and INF files, we can build the UEFI application. To do this, open the **Visual Studio Developer Command Prompt** and navigate to the EDK2 directory. Open the Conf/target.txt file and setup the following variables:
+
+
+<details><summary>target.txt</summary>
+<p>
 
 ```ini
-# Variables defined to be used during the build process
-[Defines] 
-  INF_VERSION       = 0x00010005 
-  BASE_NAME         = HelloWorldApplication 
-  FILE_GUID         = 4d830c7f-285c-4a17-b9ca-fdeec0d7d208 # Create GUID - https://www.guidgenerator.com/online-guid-generator.aspx
-  MODULE_TYPE       = UEFI_APPLICATION
-  VERSION_STRING    = 1.0 # The version of the module.
-  ENTRY_POINT       = UefiMain 
+#
+#  Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#
+#  ALL Paths are Relative to WORKSPACE
 
-# Source code
-[Sources]
-  HelloWorld.c
+#  Separate multiple LIST entries with a SINGLE SPACE character, do not use comma characters.
+#  Un-set an option by either commenting out the line, or not setting a value.
 
-# Required packages
-[Packages]
-  MdePkg/MdePkg.dec            # Contains Uefi and UefiLib
+#
+#  PROPERTY              Type       Use         Description
+#  ----------------      --------   --------    -----------------------------------------------------------
+#  ACTIVE_PLATFORM       Filename   Recommended Specify the WORKSPACE relative Path and Filename
+#                                               of the platform description file that will be used for the
+#                                               build. This line is required if and only if the current
+#                                               working directory does not contain one or more description
+#                                               files.
+ACTIVE_PLATFORM       = HelloWorldPkg\HelloWorldPkg.dsc
 
-# Required Libraries
-[LibraryClasses]
-  UefiApplicationEntryPoint    # Uefi application entry point
-  UefiLib                      # UefiLib
+#  TARGET                List       Optional    Zero or more of the following: DEBUG, RELEASE, NOOPT
+#                                               UserDefined; separated by a space character.
+#                                               If the line is missing or no value is specified, all
+#                                               valid targets specified in the platform description file 
+#                                               will attempt to be built. The following line will build 
+#                                               DEBUG platform target.
+TARGET                = RELEASE
+
+#  TARGET_ARCH           List       Optional    What kind of architecture is the binary being target for.
+#                                               One, or more, of the following, IA32, IPF, X64, EBC, ARM
+#                                               or AArch64.
+#                                               Multiple values can be specified on a single line, using
+#                                               space characters to separate the values.  These are used
+#                                               during the parsing of a platform description file, 
+#                                               restricting the build output target(s.)
+#                                               The Build Target ARCH is determined by (precedence high to low):
+#                                                 Command-line: -a ARCH option
+#                                                 target.txt: TARGET_ARCH values
+#                                                 DSC file: [Defines] SUPPORTED_ARCHITECTURES tag
+#                                               If not specified, then all valid architectures specified
+#                                               in the platform file, for which tools are available, will be
+#                                               built.
+TARGET_ARCH           = X64
+
+#  TOOL_DEFINITION_FILE  Filename  Optional   Specify the name of the filename to use for specifying
+#                                             the tools to use for the build.  If not specified,
+#                                             WORKSPACE/Conf/tools_def.txt will be used for the build.
+TOOL_CHAIN_CONF       = Conf/tools_def.txt
+
+#  TAGNAME               List      Optional   Specify the name(s) of the tools_def.txt TagName to use.
+#                                             If not specified, all applicable TagName tools will be
+#                                             used for the build.  The list uses space character separation.
+TOOL_CHAIN_TAG        = VS2019
+
+# MAX_CONCURRENT_THREAD_NUMBER  NUMBER  Optional  The number of concurrent threads. If not specified or set
+#                                                 to zero, tool automatically detect number of processor
+#                                                 threads. Recommend to set this value to one less than the
+#                                                 number of your computer cores or CPUs. When value set to 1,
+#                                                 means disable multi-thread build, value set to more than 1,
+#                                                 means user specify the thread number to build. Not specify
+#                                                 the default value in this file.
+# MAX_CONCURRENT_THREAD_NUMBER = 1
+
+
+# BUILD_RULE_CONF  Filename Optional  Specify the file name to use for the build rules that are followed
+#                                     when generating Makefiles. If not specified, the file: 
+#                                     WORKSPACE/Conf/build_rule.txt will be used
+BUILD_RULE_CONF = Conf/build_rule.txt
+
 ```
+
+</p>
+</details>
