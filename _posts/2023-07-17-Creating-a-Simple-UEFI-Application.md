@@ -405,3 +405,6 @@ In this tutorial, we have learned how to create a simple UEFI application that p
 
 ## Usefull links
 - [UEFI EDK2 tutorials](https://github.com/Kostr/UEFI-Lessons)
+
+## Result
+<img src="/_images/result.jpg" alt="Result" width="200"/>
