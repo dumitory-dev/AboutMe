@@ -408,6 +408,6 @@ In this tutorial, we have learned how to create a simple UEFI application that p
 
 ## Result
 
-<img src="../_images/result.jpg"
+<img src="/assets/images/result.jpg"
      alt="Result"
      style="float: left; margin-right: 10px;" width="300" height="300" />
