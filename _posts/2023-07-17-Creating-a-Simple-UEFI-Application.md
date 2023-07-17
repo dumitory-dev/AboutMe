@@ -292,6 +292,9 @@ UefiMain(
 
 Now that we have created the DSC and INF files, we can build the UEFI application. To do this, open the **Visual Studio Developer Command Prompt** and navigate to the EDK2 directory. Open the `Conf/target.txt` file and setup the following variables:
 
+
+<details>
+  <summary>target.txt</summary>
 ```ini
 #
 #  Copyright (c) 2006 - 2019, Intel Corporation. All rights reserved.<BR>
@@ -364,6 +367,7 @@ TOOL_CHAIN_TAG        = VS2019
 BUILD_RULE_CONF = Conf/build_rule.txt
 
 ```
+</details>
 
 Then run the following command:
 
@@ -401,4 +405,4 @@ Press any key to boot...!
 In this tutorial, we have learned how to create a simple UEFI application that prints "Hello, World!" using EDK2. We have also learned how to run our application on real hardware. I hope you found this tutorial useful. If you have any questions or suggestions, please leave them in the comments below. Thank you for reading!
 
 ## Usefull links
-- [UEFI EDK2 tutorials] (https://github.com/Kostr/UEFI-Lessons)
+- [UEFI EDK2 tutorials](https://github.com/Kostr/UEFI-Lessons)
