@@ -26,6 +26,7 @@ More information about EDK2 can be found on the [EDK2 GitHub page](https://githu
 - The [EDK2](https://github.com/tianocore/tianocore.github.io/wiki/Getting-Started-with-EDK-II) environment set up. 
 - [Visual Studio 2022](https://visualstudio.microsoft.com/vs/preview/vs2022/)
 - Basic klnowledge of C/C++ programming language.
+- Flash drive with FAT32 partition.
 
 ## Step 1: Setup Your Environment
 
@@ -60,8 +61,68 @@ Open the **Visual Studio Developer Command Prompt** and navigate to the EDK2 dir
 ```bash
 edksetup.bat Rebuild
 ``` 
+> If you see the following error: `Treat specific warning as error...`, try to apply this patch:
 
-> You can also simply run `edksetup.bat` without any arguments to load environment variables for the EDK II build.
+```bash
+diff --git a/BaseTools/Source/C/Makefiles/ms.common b/BaseTools/Source/C/Makefiles/ms.common
+index fe7a59c280..3543edda15 100644
+--- a/BaseTools/Source/C/Makefiles/ms.common
++++ b/BaseTools/Source/C/Makefiles/ms.common
+@@ -66,5 +66,5 @@ LINKER = $(LD)
+ INC = $(INC) -I . -I $(SOURCE_PATH)\Include -I $(ARCH_INCLUDE) -I $(SOURCE_PATH)\Common
+ INC = $(INC) -I $(EDK2_PATH)\MdePkg\Include
+ 
+-CFLAGS = $(CFLAGS) /nologo /Z7 /c /O2 /MT /W4 /WX /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE
++CFLAGS = $(CFLAGS) /nologo /Z7 /c /O2 /MT /W4 /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE
+ CPPFLAGS = $(CPPFLAGS) /EHsc /nologo /Z7 /c /O2 /MT /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE
+diff --git a/BaseTools/Source/C/VfrCompile/Makefile b/BaseTools/Source/C/VfrCompile/Makefile
+index d6ec6ad00b..f2a84d7420 100644
+--- a/BaseTools/Source/C/VfrCompile/Makefile
++++ b/BaseTools/Source/C/VfrCompile/Makefile
+@@ -6,7 +6,7 @@
+ #
+ !INCLUDE ..\Makefiles\ms.common
+ 
+-CPPFLAGS = $(CPPFLAGS) /WX /D PCCTS_USE_NAMESPACE_STD
++CPPFLAGS = $(CPPFLAGS) /D PCCTS_USE_NAMESPACE_STD
+ APPNAME = VfrCompile
+ 
+ LIBS = $(LIB_PATH)\Common.lib
+diff --git a/CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf b/CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
+index 86e74b57b1..c16fef41c8 100644
+--- a/CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
++++ b/CryptoPkg/Library/IntrinsicLib/IntrinsicLib.inf
+@@ -54,16 +54,16 @@
+    #
+    # Override MSFT build option to remove /Oi and /GL
+    #
+-   MSFT:DEBUG_VS2003_IA32_CC_FLAGS        == /nologo /c /WX /W4 /Gs32768 /Gy /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /GX- /Zi /Gm
+-   MSFT:RELEASE_VS2003_IA32_CC_FLAGS      == /nologo /c /WX /W4 /Gs32768 /Gy /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /GX-
+-   MSFT:DEBUG_VS2003xASL_IA32_CC_FLAGS    == /nologo /c /WX /W4 /Gs32768 /Gy /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /GX- /Zi /Gm
+-   MSFT:RELEASE_VS2003xASL_IA32_CC_FLAGS  == /nologo /c /WX /W4 /Gs32768 /Gy /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /GX-
+-   MSFT:DEBUG_DDK3790_IA32_CC_FLAGS       == /nologo /c /WX /Gy /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm
+-   MSFT:RELEASE_DDK3790_IA32_CC_FLAGS     == /nologo /c /WX /Gy /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF
+-   MSFT:DEBUG_DDK3790xASL_IA32_CC_FLAGS   == /nologo /c /WX /Gy /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm
+-   MSFT:RELEASE_DDK3790xASL_IA32_CC_FLAGS == /nologo /c /WX /Gy /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF
+-   MSFT:DEBUG_*_IA32_CC_FLAGS             == /nologo /c /WX /GS- /W4 /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /Gy /Zi /Gm
+-   MSFT:RELEASE_*_IA32_CC_FLAGS           == /nologo /c /WX /GS- /W4 /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF
+-   MSFT:DEBUG_*_X64_CC_FLAGS              == /nologo /c /WX /GS- /X /W4 /Gs32768 /D UNICODE /O1b2s /Gy /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm
+-   MSFT:RELEASE_*_X64_CC_FLAGS            == /nologo /c /WX /GS- /X /W4 /Gs32768 /D UNICODE /O1b2s /Gy /FIAutoGen.h /EHs-c- /GR- /GF
++   MSFT:DEBUG_VS2003_IA32_CC_FLAGS        == /nologo /c /W4 /Gs32768 /Gy /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /GX- /Zi /Gm
++   MSFT:RELEASE_VS2003_IA32_CC_FLAGS      == /nologo /c /W4 /Gs32768 /Gy /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /GX-
++   MSFT:DEBUG_VS2003xASL_IA32_CC_FLAGS    == /nologo /c /W4 /Gs32768 /Gy /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /GX- /Zi /Gm
++   MSFT:RELEASE_VS2003xASL_IA32_CC_FLAGS  == /nologo /c /W4 /Gs32768 /Gy /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /GX-
++   MSFT:DEBUG_DDK3790_IA32_CC_FLAGS       == /nologo /c /Gy /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm
++   MSFT:RELEASE_DDK3790_IA32_CC_FLAGS     == /nologo /c /Gy /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF
++   MSFT:DEBUG_DDK3790xASL_IA32_CC_FLAGS   == /nologo /c /Gy /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm
++   MSFT:RELEASE_DDK3790xASL_IA32_CC_FLAGS == /nologo /c /Gy /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF
++   MSFT:DEBUG_*_IA32_CC_FLAGS             == /nologo /c /GS- /W4 /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF /Gy /Zi /Gm
++   MSFT:RELEASE_*_IA32_CC_FLAGS           == /nologo /c /GS- /W4 /Gs32768 /D UNICODE /O1b2 /FIAutoGen.h /EHs-c- /GR- /GF
++   MSFT:DEBUG_*_X64_CC_FLAGS              == /nologo /c /GS- /X /W4 /Gs32768 /D UNICODE /O1b2s /Gy /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm
++   MSFT:RELEASE_*_X64_CC_FLAGS            == /nologo /c /GS- /X /W4 /Gs32768 /D UNICODE /O1b2s /Gy /FIAutoGen.h /EHs-c- /GR- /GF
+   INTEL:*_*_*_CC_FLAGS                    =  /Oi-
+
+```
 
 This command will initiate the compilation and building process of the EDK2 base tools. The resulting binaries will be located in `<root>\BaseTools\Bin\Win32`. These tools include GenFfs.exe, GenFv.exe, VfrCompile.exe, and various other commonly used tools.
 
@@ -229,11 +290,7 @@ UefiMain(
 
 ### Build the UEFI Application
 
-Now that we have created the DSC and INF files, we can build the UEFI application. To do this, open the **Visual Studio Developer Command Prompt** and navigate to the EDK2 directory. Open the Conf/target.txt file and setup the following variables:
-
-
-<details><summary>target.txt</summary>
-<p>
+Now that we have created the DSC and INF files, we can build the UEFI application. To do this, open the **Visual Studio Developer Command Prompt** and navigate to the EDK2 directory. Open the `Conf/target.txt` file and setup the following variables:
 
 ```ini
 #
@@ -308,5 +365,40 @@ BUILD_RULE_CONF = Conf/build_rule.txt
 
 ```
 
-</p>
-</details>
+Then run the following command:
+
+```bash
+edksetup.bat  # load environment variables for the EDK II build
+Build # build the our UEFI application
+```
+
+You should see the following output:
+
+```bash
+- Done -
+Build end time: <date> <time>
+Build total time: 00:00:02
+```
+
+Then go to `<root>\Build\HelloWorldPkg\RELEASE_VS2019\X64` and you should see the following files:
+
+```bash
+HelloWorldApplication.efi
+```
+
+## Step 3: Run the UEFI Application on Real Hardware
+
+Format your flash drive with FAT32 partition. Then create a folders EFI/BOOT. Then copy the `HelloWorldApplication.efi` file to the `EFI/BOOT` folder. Rename the `HelloWorldApplication.efi` file to `BOOTX64.EFI`. Then plug the flash drive into your UEFI-enabled hardware and boot from it. You should see the following output:
+
+```
+Hello World!
+
+Press any key to boot...!
+```
+
+## Conclusion
+
+In this tutorial, we have learned how to create a simple UEFI application that prints "Hello, World!" using EDK2. We have also learned how to run our application on real hardware. I hope you found this tutorial useful. If you have any questions or suggestions, please leave them in the comments below. Thank you for reading!
+
+## Usefull links
+- [UEFI EDK2 tutorials] (https://github.com/Kostr/UEFI-Lessons)
